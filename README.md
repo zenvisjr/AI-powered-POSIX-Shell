@@ -340,7 +340,7 @@ Before you begin, ensure you have the following software installed:
 
 1. Clone the repository or download the project:
    ```bash
-   git clone https://github.com/zenvisjr/Academics.git
+   git clone https://github.com/zenvisjr/AI-powered-POSIX-Shell.git
    cd Projects/AI-powered-POSIX-Shell
    ```
 

@@ -1,0 +1,16 @@
+# Environment files
+.env
+.env.*
+
+# Python cache and virtualenvs
+__pycache__/
+*.pyc
+venv/
+env/
+
+# Compiled C++ objects
+build/
+*.o
+
+# Logs
+*.log

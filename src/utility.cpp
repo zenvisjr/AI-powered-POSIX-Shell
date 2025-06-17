@@ -138,3 +138,73 @@ string tokenize(string &input) {
 
 
 
+//for AI stuff
+
+std::string escape_quotes(const std::string& input) {
+    std::string escaped;
+    for (char c : input) {
+        if (c == '"') escaped += "\\\"";
+        else escaped += c;
+    }
+    return escaped;
+}
+
+int run_python_helper(const std::string& script_name, std::string& args, const std::string& error_msg) {
+    std::string escaped_args;
+    for (char ch : args) {
+        if (ch == '\'')
+            escaped_args += "'\\''";
+        else
+            escaped_args += ch;
+    }
+
+    std::string cmd = "python3 AI/" + script_name + " '" + escaped_args + "'";
+    FILE* pipe = popen(cmd.c_str(), "r");
+
+    if (!pipe) {
+        std::cerr << "Failed to run " << script_name << std::endl;
+        return 0;
+    }
+
+    char buffer[256];
+    while (fgets(buffer, sizeof(buffer), pipe) != nullptr) {
+        std::cout << buffer;
+    }
+
+    int result = pclose(pipe);
+    if (result != 0) {
+        std::cerr << error_msg << std::endl;
+        return 0;
+    }
+
+    return 1;
+}
+
+
+
+#include "header.h"
+#include <filesystem>  // for std::filesystem::*
+
+bool validate_script_path(const std::string& path) {
+    try {
+        std::filesystem::path outputPath(path);
+        auto parent = outputPath.parent_path();
+
+        if (parent.empty()) {
+            std::cerr << "ERROR: Path must include a directory (e.g. /tmp/file.sh)\n";
+            return false;
+        }
+
+        if (std::filesystem::exists(parent) && !std::filesystem::is_directory(parent)) {
+            std::cerr << "ERROR: '" << parent << "' exists but is not a directory\n";
+            return false;
+        }
+
+        std::filesystem::create_directories(parent);  // Create if not exists
+        return true;
+
+    } catch (const std::exception& e) {
+        std::cerr << "ERROR: Path check failed — " << e.what() << "\n";
+        return false;
+    }
+}

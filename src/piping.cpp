@@ -1,3 +1,7 @@
+
+#include "summarizer_output.h"
+
+
 #include "header.h"
 #include "piping.h"
 #include "utility.h"
@@ -32,8 +36,11 @@ bool piping(vector<string>& command)
         print(command);
 
     }
+    bool summarize_found = false;
+    
     while(true)
     {
+        if(summarize_found == true) break;
         string check = find_separator(command);
         pair<vector<string>, vector<string>> com = extract_pipe(command);
 
@@ -89,6 +96,12 @@ bool piping(vector<string>& command)
                     }
 
                 }
+                else if (com.second.size() == 1 && com.second[0] == "summarize") {
+                    cout<<"enter here";
+                    int out_fd = open("/tmp/ai_summarizer_output.txt", O_WRONLY | O_CREAT | O_TRUNC, 0600); //ai
+                    dup2(out_fd, STDOUT_FILENO); //ai
+                    close(out_fd); //ai
+                }
                 else
                 {
                     if(dup2(pip[1], STDOUT_FILENO) == -1) //You can use STDOUT_FILENO when you want to redirect output to a different destination, such as a file or a pipe.
@@ -103,6 +116,10 @@ bool piping(vector<string>& command)
             }
             
             //cout<<"after dup"<<endl;
+            // ✅ Skip execution if the command is 'summarize'
+            if (com.first.size() == 1 && com.first[0] == "summarize") {
+                exit(0);
+            }
             call_exec(com.first);
             exit(0);
         }
@@ -125,6 +142,12 @@ bool piping(vector<string>& command)
                 }
                 
                command = com.second;
+
+                if(command.size() == 1 && command[0] == "summarize") {
+                // cout<<"last command"<<endl;
+                    summarize_found = true;
+                }
+           
             }
            
         }
@@ -137,6 +160,15 @@ bool piping(vector<string>& command)
         for(auto v: pid)
         {
             waitpid(v, NULL, 0);
+        }
+
+        // If last command was 'summarize', trigger summarizer_output()
+        if (command.size() == 1 && command[0] == "summarize") { // ✅ ai
+            int error = summarizer_output(); //ai
+            if(error == 0) {
+                std::cerr << "unable to process summarise output command" << std::endl;
+                return false;
+            }
         }
         return true;
     
@@ -182,5 +214,4 @@ pair<vector<string>, vector<string>> extract_pipe(vector<string>& arguments)
     //print(command2);
     return make_pair(command1, command2);
 }
-
 

@@ -3,6 +3,7 @@
 #include "utility.h"
 using namespace std;
 
+bool searchit(const char*, string&);
 // bool search(string &command)
 // {
 //     command = command.substr(7);

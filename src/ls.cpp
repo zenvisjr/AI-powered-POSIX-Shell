@@ -354,7 +354,7 @@ bool ls_prev()
 
     string prev = curr_dir;
     //cout<<prev<<endl;
-    int e = prevfind_last_of.("/");
+    int e = prev.find_last_of("/");
     prev = prev.substr(0, e);
     //cout<<s<<endl;
     //cout<<e<<endl;

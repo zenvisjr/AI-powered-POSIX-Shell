@@ -26,6 +26,11 @@
 #include <fcntl.h>
 #include <utility>
 #include <readline/history.h>
+#include <sstream>
+
+
+#include <cstdio>      // for popen, fgets, pclose
+#include <array>       // for buffer array
 
 // using namespace std;
 // using namespace std::filesystem;
@@ -35,5 +40,8 @@ extern std::string home;
 extern std::string current_directory;
 extern std::string prev_dir;
 extern std::vector<std::string> history;
+
+extern bool hacker_mood;  // Declare global flag
+
 
 #endif

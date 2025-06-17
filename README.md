@@ -175,7 +175,7 @@ The `copilot` command provides smart, context-aware command-line suggestions and
 
 **Syntax:**
 ```bash
-copilot
+copilot: <command>
 ```
 **Example**
 ```bash
